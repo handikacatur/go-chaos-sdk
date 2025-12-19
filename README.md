@@ -27,7 +27,7 @@ Testing timeouts and error handling usually requires heavy tools like
 ## 📦 Installation
 
 ```bash
-go get [github.com/handikacatur/go-chaos-sdk](https://github.com/handikacatur/go-chaos-sdk)
+go get https://github.com/handikacatur/go-chaos-sdk
 
 
 ```
@@ -122,4 +122,4 @@ grpcurl -plaintext -H "x-chaos-test: true" localhost:50051 my.Service/Method
 Only enable it if `APP_ENV=staging` or `APP_ENV=dev`.
 
 2. Strip Headers: Configure your Nginx/Load Balancer to strip the 
-`x-chaos-test header`` from incoming external traffic to prevent public abuse.
+`x-chaos-test header` from incoming external traffic to prevent public abuse.
