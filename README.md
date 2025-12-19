@@ -12,7 +12,8 @@
 
 ## 🚀 Why use this?
 
-Testing timeouts and error handling usually requires heavy tools like *Chaos Mesh* or *Toxiproxy*. This is overkill for unit tests or local development.
+Testing timeouts and error handling usually requires heavy tools like
+*Chaos Mesh* or *Toxiproxy*. This is overkill for unit tests or local development.
 
 **Go Chaos SDK** solves this by living inside your middleware.
 
@@ -30,9 +31,13 @@ go get [github.com/handikacatur/go-chaos-sdk](https://github.com/handikacatur/go
 
 
 ```
+
 ---
+
 ## 🛠️ Usage
+
 1. Create chaos configuration.
+
 ```Go
 var chaosConfig = core.Config{
     // The "Safety Lock". Set this to false in Production!
@@ -50,7 +55,9 @@ var chaosConfig = core.Config{
 ```
 
 2. Add to your gRPC
+
 Works as standard Unary interceptor.
+
 ```go
 import (
     "net/http"
@@ -68,27 +75,28 @@ http.ListenAndServe(":8080", handler)
 ```
 
 3. Add to your HTTP/REST API
+
 Works with net/http, Chi, Mux, and Gin (via wrapper).
+
 ```go
 import (
-    "net/http"
-    "[github.com/handikacatur/go-chaos-sdk/httpchaos](https://github.com/handikacatur/go-chaos-sdk/httpchaos)"
+    "google.golang.org/grpc"
+    "[github.com/handikacatur/go-chaos-sdk/grpcchaos](https://github.com/handikacatur/go-chaos-sdk/grpcchaos)"
 )
 
-// Wrap your router
-mux := http.NewServeMux()
-// ... register your routes ...
-
-// Apply Middleware
-handler := httpchaos.Middleware(chaosConfig)(mux)
-
-http.ListenAndServe(":8080", handler)
+// Add to Server Options
+s := grpc.NewServer(
+    grpc.UnaryInterceptor(grpcchaos.UnaryServerInterceptor(chaosConfig)),
+)
 ```
 ---
 
 ## 🥽 How To Test
+
 Once running, your service behaves normally until you send the magic header.
+
 ### Test Latency (curl)
+
 ```bash
 # Normal request (Fast)
 curl localhost:8080/ping
@@ -98,6 +106,7 @@ curl -H "x-chaos-test: true" localhost:8080/ping
 ```
 
 ### Test gRPC (grpcurl)
+
 ```bash
 # 💥 Chaos request
 grpcurl -plaintext -H "x-chaos-test: true" localhost:50051 my.Service/Method
@@ -106,6 +115,11 @@ grpcurl -plaintext -H "x-chaos-test: true" localhost:50051 my.Service/Method
 ---
 
 ## 🛡️ Security Best Practice
+
 ⚠️ Warning: This tool is powerful. Do not deploy it to Production without safeguards.
-1. Environment Gating: Always set `Enabled: false` by default. Only enable it if `APP_ENV=staging` or `APP_ENV=dev`.
-2. Strip Headers: Configure your Nginx/Load Balancer to strip the `x-chaos-test header`` from incoming external traffic to prevent public abuse.
+
+1. Environment Gating: Always set `Enabled: false` by default.
+Only enable it if `APP_ENV=staging` or `APP_ENV=dev`.
+
+2. Strip Headers: Configure your Nginx/Load Balancer to strip the 
+`x-chaos-test header`` from incoming external traffic to prevent public abuse.
