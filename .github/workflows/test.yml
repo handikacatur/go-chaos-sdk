@@ -1,0 +1,34 @@
+name: Go Tests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    name: Test & Vet
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Install Dependencies
+      run: go mod download
+
+    - name: Run Vet (Linting)
+      # 'go vet' catches common mistakes like printf format errors
+      run: go vet ./...
+
+    - name: Run Tests
+      # -v: verbose output
+      # -race: checks for race conditions (crucial for concurrency tools!)
+      # -cover: shows test coverage percentage
+      run: go test -v -race -cover ./...
