@@ -60,8 +60,24 @@ Works as standard Unary interceptor.
 
 ```go
 import (
+    "google.golang.org/grpc"
+    "[github.com/handikacatur/go-chaos-sdk/grpcchaos](https://github.com/handikacatur/go-chaos-sdk/grpcchaos)"
+)
+
+// Add to Server Options
+s := grpc.NewServer(
+    grpc.UnaryInterceptor(grpcchaos.UnaryServerInterceptor(chaosConfig)),
+)
+```
+
+3. Add to your HTTP/REST API
+
+Works with net/http, Chi, and Mux.
+
+```go
+import (
     "net/http"
-    "[github.com/handikacatur/go-chaos-sdk/httpchaos](https://github.com/handikacatur/go-chaos-sdk/httpchaos)"
+    "https://github.com/handikacatur/go-chaos-sdk/httpchaos"
 )
 
 // Wrap your router
@@ -72,23 +88,42 @@ mux := http.NewServeMux()
 handler := httpchaos.Middleware(chaosConfig)(mux)
 
 http.ListenAndServe(":8080", handler)
+
 ```
 
-3. Add to your HTTP/REST API
-
-Works with net/http, Chi, Mux, and Gin (via wrapper).
+If your framework use `fasthttp`, you need to wrap it using wrapper.
 
 ```go
+package main
+
 import (
-    "google.golang.org/grpc"
-    "[github.com/handikacatur/go-chaos-sdk/grpcchaos](https://github.com/handikacatur/go-chaos-sdk/grpcchaos)"
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/adaptor/v2" // 👈 You need this
+    "github.com/handikacatur/go-chaos-sdk/core"
+    "github.com/handikacatur/go-chaos-sdk/httpchaos"
 )
 
-// Add to Server Options
-s := grpc.NewServer(
-    grpc.UnaryInterceptor(grpcchaos.UnaryServerInterceptor(chaosConfig)),
-)
+func main() {
+    app := fiber.New()
+
+    chaosConfig := core.Config{
+        Enabled:       true,
+        HeaderTrigger: "x-chaos-test",
+        Latency:       2 * time.Second,
+    }
+
+    // ⚡ FIX: Wrap your standard middleware with the adaptor
+    // Fiber cannot run standard middleware directly.
+    app.Use(adaptor.HTTPMiddleware(httpchaos.Middleware(chaosConfig)))
+
+    app.Get("/ping", func(c *fiber.Ctx) error {
+        return c.SendString("pong")
+    })
+
+    app.Listen(":3000")
+}
 ```
+
 ---
 
 ## 🥽 How To Test
