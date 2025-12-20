@@ -4,11 +4,12 @@ import (
 	"net/http"
 
 	"github.com/handikacatur/go-chaos-sdk/core"
+	"github.com/handikacatur/go-chaos-sdk/chaos"
 )
 
 // Middleware returns a standard http.Handler wrapper that injects chaos.
 // It is compatible with net/http, Chi, Gorilla Mux, and Gin (via adapter).
-func Middleware(cfg core.Config) func(http.Handler) http.Handler {
+func Middleware(cfg chaos.Config) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// Fast path: if chaos is globally disabled, skip all logic.

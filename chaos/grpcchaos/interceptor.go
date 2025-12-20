@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
+	"github.com/handikacatur/go-chaos-sdk/chaos"
 	"github.com/handikacatur/go-chaos-sdk/core"
 )
 
@@ -15,7 +16,7 @@ import (
 // latency or failures into gRPC requests based on the provided configuration.
 //
 // It checks for a specific trigger header (if configured) before applying chaos.
-func UnaryServerInterceptor(cfg core.Config) grpc.UnaryServerInterceptor {
+func UnaryServerInterceptor(cfg chaos.Config) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		// Fast path: if chaos is globally disabled, skip all logic.
 		if !cfg.Enabled {

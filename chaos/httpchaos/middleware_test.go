@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/handikacatur/go-chaos-sdk/core"
+	"github.com/handikacatur/go-chaos-sdk/chaos"
 )
 
 func TestMiddleware(t *testing.T) {
@@ -17,7 +17,7 @@ func TestMiddleware(t *testing.T) {
 
 	tests := []struct {
 		name           string
-		cfg            core.Config
+		cfg            chaos.Config
 		headerKey      string
 		headerVal      string
 		expectedStatus int
@@ -25,25 +25,25 @@ func TestMiddleware(t *testing.T) {
 	}{
 		{
 			name:           "disabled_globally",
-			cfg:            core.Config{Enabled: false, FailureRate: 1.0},
+			cfg:            chaos.Config{Enabled: false, FailureRate: 1.0},
 			expectedStatus: http.StatusOK,
 		},
 		{
 			name:           "no_header_trigger",
-			cfg:            core.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
+			cfg:            chaos.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
 			headerKey:      "x-other",
 			expectedStatus: http.StatusOK,
 		},
 		{
 			name:           "trigger_failure",
-			cfg:            core.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
+			cfg:            chaos.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
 			headerKey:      "x-chaos",
 			headerVal:      "true",
 			expectedStatus: http.StatusServiceUnavailable,
 		},
 		{
 			name:           "trigger_latency",
-			cfg:            core.Config{Enabled: true, HeaderTrigger: "x-chaos", Latency: 50 * time.Millisecond},
+			cfg:            chaos.Config{Enabled: true, HeaderTrigger: "x-chaos", Latency: 50 * time.Millisecond},
 			headerKey:      "x-chaos",
 			headerVal:      "true",
 			expectedStatus: http.StatusOK, // It eventually succeeds

@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/handikacatur/go-chaos-sdk/chaos/httpchaos"
-	"github.com/handikacatur/go-chaos-sdk/core"
+	"github.com/handikacatur/go-chaos-sdk/chaos"
 )
 
 func main() {
-	cfg := core.Config{
+	cfg := chaos.Config{
 		Enabled:       true,
 		HeaderTrigger: "x-chaos-test",
 		Latency:       4 * time.Second,

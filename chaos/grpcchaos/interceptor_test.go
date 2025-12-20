@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	"github.com/handikacatur/go-chaos-sdk/core"
+	"github.com/handikacatur/go-chaos-sdk/chaos"
 )
 
 func TestUnaryServerInterceptor(t *testing.T) {
@@ -22,31 +22,31 @@ func TestUnaryServerInterceptor(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		cfg         core.Config
+		cfg         chaos.Config
 		ctx         context.Context
 		expectError bool
 		expectCode  codes.Code
 	}{
 		{
 			name: "disabled_skips_chaos",
-			cfg:  core.Config{Enabled: false, FailureRate: 1.0},
+			cfg:  chaos.Config{Enabled: false, FailureRate: 1.0},
 			ctx:  context.Background(),
 		},
 		{
 			name: "missing_header_skips_chaos",
-			cfg:  core.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
+			cfg:  chaos.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
 			ctx:  context.Background(), // No metadata
 		},
 		{
 			name: "injects_failure",
-			cfg:  core.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
+			cfg:  chaos.Config{Enabled: true, HeaderTrigger: "x-chaos", FailureRate: 1.0},
 			ctx: metadata.NewIncomingContext(context.Background(), metadata.Pairs("x-chaos", "true")),
 			expectError: true,
 			expectCode:  codes.Unavailable,
 		},
 		{
 			name: "injects_latency",
-			cfg:  core.Config{Enabled: true, HeaderTrigger: "x-chaos", Latency: 50 * time.Millisecond},
+			cfg:  chaos.Config{Enabled: true, HeaderTrigger: "x-chaos", Latency: 50 * time.Millisecond},
 			ctx:  metadata.NewIncomingContext(context.Background(), metadata.Pairs("x-chaos", "true")),
 			// Should succeed after waiting
 		},

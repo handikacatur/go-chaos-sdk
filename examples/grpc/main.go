@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/handikacatur/go-chaos-sdk/core"
+	"github.com/handikacatur/go-chaos-sdk/chaos"
 	"github.com/handikacatur/go-chaos-sdk/chaos/grpcchaos"
 	pb "github.com/handikacatur/go-chaos-sdk/examples/grpc/proto"
 )
@@ -26,7 +26,7 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 
 func main() {
 	// 1. Define Chaos Policy
-	cfg := core.Config{
+	cfg := chaos.Config{
 		Enabled:       true,
 		HeaderTrigger: "x-chaos-test",
 		Latency:       3 * time.Second, // 3s delay for gRPC
