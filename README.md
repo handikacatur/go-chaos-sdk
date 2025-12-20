@@ -39,7 +39,7 @@ go get https://github.com/handikacatur/go-chaos-sdk
 1. Create chaos configuration.
 
 ```Go
-var chaosConfig = core.Config{
+var chaosConfig = chaos.Config{
     // The "Safety Lock". Set this to false in Production!
     Enabled:       os.Getenv("APP_ENV") != "production",
 
@@ -61,7 +61,7 @@ Works as standard Unary interceptor.
 ```go
 import (
     "google.golang.org/grpc"
-    "[github.com/handikacatur/go-chaos-sdk/grpcchaos](https://github.com/handikacatur/go-chaos-sdk/grpcchaos)"
+    "https://github.com/handikacatur/go-chaos-sdk/grpcchaos"
 )
 
 // Add to Server Options
@@ -98,7 +98,7 @@ package main
 
 import (
     "github.com/gofiber/fiber/v2"
-    "github.com/gofiber/adaptor/v2" // 👈 You need this
+    "github.com/gofiber/adaptor/v2"
     "github.com/handikacatur/go-chaos-sdk/core"
     "github.com/handikacatur/go-chaos-sdk/httpchaos"
 )
@@ -112,7 +112,6 @@ func main() {
         Latency:       2 * time.Second,
     }
 
-    // ⚡ FIX: Wrap your standard middleware with the adaptor
     // Fiber cannot run standard middleware directly.
     app.Use(adaptor.HTTPMiddleware(httpchaos.Middleware(chaosConfig)))
 
