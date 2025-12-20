@@ -27,7 +27,7 @@ Testing timeouts and error handling usually requires heavy tools like
 ## 📦 Installation
 
 ```bash
-go get https://github.com/handikacatur/go-chaos-sdk
+go get github.com/handikacatur/go-chaos-sdk
 
 
 ```
@@ -61,7 +61,7 @@ Works as standard Unary interceptor.
 ```go
 import (
     "google.golang.org/grpc"
-    "https://github.com/handikacatur/go-chaos-sdk/grpcchaos"
+    "github.com/handikacatur/go-chaos-sdk/grpcchaos"
 )
 
 // Add to Server Options
@@ -77,7 +77,7 @@ Works with net/http, Chi, and Mux.
 ```go
 import (
     "net/http"
-    "https://github.com/handikacatur/go-chaos-sdk/httpchaos"
+    "github.com/handikacatur/go-chaos-sdk/httpchaos"
 )
 
 // Wrap your router
