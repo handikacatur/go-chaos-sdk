@@ -99,14 +99,14 @@ package main
 import (
     "github.com/gofiber/fiber/v2"
     "github.com/gofiber/adaptor/v2"
-    "github.com/handikacatur/go-chaos-sdk/core"
+    "github.com/handikacatur/go-chaos-sdk/chaos"
     "github.com/handikacatur/go-chaos-sdk/httpchaos"
 )
 
 func main() {
     app := fiber.New()
 
-    chaosConfig := core.Config{
+    chaosConfig := chaos.Config{
         Enabled:       true,
         HeaderTrigger: "x-chaos-test",
         Latency:       2 * time.Second,
